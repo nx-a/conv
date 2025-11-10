@@ -5,7 +5,7 @@ import (
 	"io"
 )
 
-func Parse[T any](jsonData io.ReadCloser) (T, error) {
+func Parse[T any](jsonData io.Reader) (T, error) {
 	decoder := json.NewDecoder(jsonData)
 	var dt T
 	err := decoder.Decode(&dt)
