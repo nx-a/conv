@@ -165,12 +165,16 @@ func String(v any) string {
 		return "false"
 	case int:
 		return strconv.Itoa(v.(int))
+	case int64:
+		return strconv.FormatInt(v.(int64), 10)
 	case uint64:
 		return strconv.FormatUint(v.(uint64), 10)
+	case float32:
+		return strconv.FormatFloat(float64(v.(float32)), 'f', -1, 64)
 	case float64:
 		return strconv.FormatFloat(v.(float64), 'f', -1, 64)
 	default:
-		return ""
+		return fmt.Sprintf("%v", v)
 	}
 }
 func First[T any](t T, _ any) T {
