@@ -165,6 +165,8 @@ func String(v any) string {
 		return "false"
 	case int:
 		return strconv.Itoa(v.(int))
+	case int32:
+		return strconv.FormatInt(int64(v.(int32)), 10)
 	case int64:
 		return strconv.FormatInt(v.(int64), 10)
 	case uint64:
