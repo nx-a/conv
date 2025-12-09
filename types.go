@@ -173,6 +173,8 @@ func String(v any) string {
 		return strconv.FormatFloat(float64(v.(float32)), 'f', -1, 64)
 	case float64:
 		return strconv.FormatFloat(v.(float64), 'f', -1, 64)
+	case time.Time:
+		return (v.(time.Time)).Format(time.RFC3339)
 	default:
 		return fmt.Sprintf("%v", v)
 	}
@@ -184,7 +186,7 @@ func First[T any](t T, _ any) T {
 func Er[T any](t T, err error) T {
 	_, file, line, ok := runtime.Caller(1)
 	if ok {
-		fmt.Fprintf(os.Stderr, "%s:%d: %v\n", file, line, err)
+		_, _ = fmt.Fprintf(os.Stderr, "%s:%d: %v\n", file, line, err)
 	}
 	return t
 }
