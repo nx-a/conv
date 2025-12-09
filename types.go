@@ -14,6 +14,10 @@ import (
 func isStruct(v any) bool {
 	return reflect.TypeOf(v).Kind() == reflect.Struct
 }
+
+// To is ext func
+//
+//nolint:unused
 func To[T any](v any) T {
 	var t T
 	if v == nil {
@@ -185,6 +189,9 @@ func First[T any](t T, _ any) T {
 	return t
 }
 
+// Er is ext func
+//
+//nolint:unused
 func Er[T any](t T, err error) T {
 	_, file, line, ok := runtime.Caller(1)
 	if ok {
