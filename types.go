@@ -155,6 +155,10 @@ func Int(v any) int {
 	}
 	return 0
 }
+func Ptr[T any](v any) *T {
+	var t T = To[T](v)
+	return &t
+}
 func String(v any) string {
 	if v == nil {
 		return ""
