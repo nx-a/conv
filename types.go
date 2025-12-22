@@ -1,6 +1,7 @@
 package conv
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -13,6 +14,51 @@ import (
 
 func isStruct(v any) bool {
 	return reflect.TypeOf(v).Kind() == reflect.Struct
+}
+
+// RecursiveValue принемает на вход рекурсивный point, и строку, раскладывающую рекурсию и возвращающую значение
+//
+//nolint:unused
+func RecursiveValue(data any, path string) (any, error) {
+	if data == nil {
+		return nil, errors.New("data is nil")
+	}
+
+	if path == "" {
+		return data, nil
+	}
+
+	keys := strings.Split(path, ".")
+	var current any = data
+
+	for i, key := range keys {
+		switch v := current.(type) {
+		case map[string]any:
+			val, exists := v[key]
+			if !exists {
+				return nil, fmt.Errorf("key '%s' not found at path '%s'", key, strings.Join(keys[:i+1], "."))
+			}
+			current = val
+
+		case []any:
+			// Если ключ - числовой индекс для массива
+			index := -1
+			_, err := fmt.Sscanf(key, "%d", &index)
+			if err != nil {
+				return nil, fmt.Errorf("expected array index, got '%s' at path '%s'", key, strings.Join(keys[:i+1], "."))
+			}
+
+			if index < 0 || index >= len(v) {
+				return nil, fmt.Errorf("array index %d out of bounds at path '%s'", index, strings.Join(keys[:i+1], "."))
+			}
+			current = v[index]
+
+		default:
+			return nil, fmt.Errorf("cannot access key '%s' on non-map/non-array type %T at path '%s'", key, current, strings.Join(keys[:i+1], "."))
+		}
+	}
+
+	return current, nil
 }
 
 // To is ext func
@@ -155,6 +201,10 @@ func Int(v any) int {
 	}
 	return 0
 }
+
+// Ptr convert elements to any types and get point
+//
+//nolint:unused
 func Ptr[T any](v any) *T {
 	var t T = To[T](v)
 	return &t
