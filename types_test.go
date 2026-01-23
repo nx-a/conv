@@ -65,6 +65,14 @@ func TestRecursiveValue(t *testing.T) {
 		fmt.Printf("User 1 name: %v\n", val) // "Bob"
 	}
 }
+func TestString(t *testing.T) {
+	assertions := assert.New(t)
+	num := int64(12)
+	val := String(&num)
+	assertions.Equal("12", val)
+	val = String(num)
+	assertions.Equal("12", val)
+}
 func TestPtr(t *testing.T) {
 	fmt.Println("TestTo")
 	assertions := assert.New(t)
