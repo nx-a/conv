@@ -74,10 +74,16 @@ func To[T any](v any) T {
 		return any(String(v)).(T)
 	case int:
 		return any(Int(v)).(T)
+	case int32:
+		return any(Int32(v)).(T)
+	case int64:
+		return any(Int64(v)).(T)
 	case bool:
 		return any(Bool(v)).(T)
 	case uint:
-		return any(Uint(v)).(T)
+		return any(uint(Uint(v))).(T)
+	case uint32:
+		return any(uint32(Uint(v))).(T)
 	case uint64:
 		return any(Uint(v)).(T)
 	case float32:
@@ -183,7 +189,48 @@ func Bool(v any) bool {
 	}
 	return false
 }
-
+func Int64(v any) int64 {
+	if v == nil {
+		return 0
+	}
+	switch kv := v.(type) {
+	case bool:
+		if kv {
+			return 1
+		}
+		return 0
+	case int:
+		return int64(kv)
+	case int32:
+		return int64(kv)
+	case int64:
+		return kv
+	case string:
+		return First(strconv.ParseInt(kv, 10, 64))
+	}
+	return 0
+}
+func Int32(v any) int32 {
+	if v == nil {
+		return 0
+	}
+	switch kv := v.(type) {
+	case bool:
+		if kv {
+			return 1
+		}
+		return 0
+	case int:
+		return int32(kv)
+	case int32:
+		return kv
+	case int64:
+		return int32(kv)
+	case string:
+		return int32(First(strconv.ParseInt(kv, 10, 32)))
+	}
+	return 0
+}
 func Int(v any) int {
 	if v == nil {
 		return 0
