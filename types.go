@@ -310,6 +310,13 @@ func Ptr[T any](v any) *T {
 	var t = To[T](v)
 	return &t
 }
+func Orig[T any](v *T) T {
+	if v == nil {
+		var t T
+		return t
+	}
+	return *v
+}
 func String(v any) string {
 	if v == nil {
 		return ""

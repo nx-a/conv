@@ -79,6 +79,12 @@ func TestPtr(t *testing.T) {
 	v := "hello world"
 	assertions.Equal(&v, Ptr[string](v))
 }
+func TestOrig(t *testing.T) {
+	assertions := assert.New(t)
+	v := "hello world"
+	assertions.Equal(Orig(&v), v)
+	assertions.Equal(Orig[string](nil), "")
+}
 func TestTo(t *testing.T) {
 	fmt.Println("TestTo")
 	assertions := assert.New(t)
