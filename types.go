@@ -132,7 +132,13 @@ func Float(el any) float64 {
 	switch v := el.(type) {
 	case int:
 		return float64(v)
+	case int32:
+		return float64(v)
+	case int64:
+		return float64(v)
 	case uint:
+		return float64(v)
+	case uint32:
 		return float64(v)
 	case uint64:
 		return float64(v)
@@ -155,8 +161,13 @@ func Float(el any) float64 {
 			vval = vval.Elem()
 		}
 		return Float(vval.Interface())
+	default:
+		f, err := strconv.ParseFloat(String(v), 64)
+		if err != nil {
+			return 0
+		}
+		return f
 	}
-	return 0
 }
 func Uint(el any) uint64 {
 	if el == nil {
@@ -335,6 +346,10 @@ func String(v any) string {
 		return strconv.FormatInt(int64(vv), 10)
 	case int64:
 		return strconv.FormatInt(vv, 10)
+	case uint:
+		return strconv.FormatUint(uint64(vv), 10)
+	case uint32:
+		return strconv.FormatUint(uint64(vv), 10)
 	case uint64:
 		return strconv.FormatUint(vv, 10)
 	case float32:
