@@ -113,15 +113,57 @@ func Time(el any) time.Time {
 	}
 	switch v := el.(type) {
 	case string:
-		p, err := time.Parse("2006-01-02 15:04:05", v)
-		if err != nil {
-			p, err = time.Parse("2006-01-02T15:04:05", v)
-			if err != nil {
-				return t
+		switch len(v) {
+		case 0:
+			return t
+		case 10:
+			p, err := time.Parse("2006-01-02", v)
+			if err == nil {
+				return p
 			}
-			return p
+			p, err = time.Parse("02.01.2006", v)
+			if err == nil {
+				return p
+			}
+			return t
+		case 19:
+			p, err := time.Parse("2006-01-02 15:04:05", v)
+			if err == nil {
+				return p
+			}
+			p, err = time.Parse("2006-01-02T15:04:05", v)
+			if err == nil {
+				return p
+			}
+			return t
+		case 28:
+			p, err := time.Parse("2006-01-02T15:04:05.000-0700", v)
+			if err == nil {
+				return p
+			}
+			p, err = time.Parse("2006-01-02 15:04:05.000-0700", v)
+			if err == nil {
+				return p
+			}
+		default:
+			p, err := time.Parse(time.RFC3339, v)
+			if err == nil {
+				return p
+			}
+			p, err = time.Parse(time.RFC3339Nano, v)
+			if err == nil {
+				return p
+			}
+			p, err = time.Parse(time.RFC1123, v)
+			if err == nil {
+				return p
+			}
+			p, err = time.Parse(time.RFC1123Z, v)
+			if err == nil {
+				return p
+			}
+
 		}
-		return p
 	}
 	return t
 }
@@ -313,10 +355,29 @@ func Int(v any) int {
 	}
 	return 0
 }
+func Nvl[T any](v ...T) T {
+	if len(v) == 0 {
+		var t T
+		return t
+	}
+	for _, t := range v {
+		if t != nil {
+			return t
+		}
+	}
+	var t T
+	return t
+}
+
+func NilPtr[T any](v any) *T {
+	if v == nil {
+		return nil
+	}
+	var t = To[T](v)
+	return &t
+}
 
 // Ptr convert elements to any types and get point
-//
-//nolint:unused
 func Ptr[T any](v any) *T {
 	var t = To[T](v)
 	return &t
