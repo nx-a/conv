@@ -355,17 +355,19 @@ func Int(v any) int {
 	}
 	return 0
 }
-func Nvl[T any](v ...T) T {
-	if len(v) == 0 {
-		var t T
+func Nvl[T any](v ...any) T {
+	var t T
+	if v == nil {
 		return t
 	}
-	for _, t := range v {
-		if t != nil {
-			return t
+	if len(v) == 0 {
+		return t
+	}
+	for _, _t := range v {
+		if _t != nil {
+			return To[T](_t)
 		}
 	}
-	var t T
 	return t
 }
 
