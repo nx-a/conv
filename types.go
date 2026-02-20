@@ -285,19 +285,29 @@ func Int64(v any) int64 {
 		return int64(kv)
 	case int64:
 		return kv
+	case uint:
+		return int64(kv)
+	case uint32:
+		return int64(kv)
+	case uint64:
+		return int64(kv)
+	case float32:
+		return int64(kv)
+	case float64:
+		return int64(kv)
 	case string:
 		return First(strconv.ParseInt(kv, 10, 64))
-	case any:
+	default:
 		val := reflect.ValueOf(v)
 		if val.Kind() == reflect.Ptr {
 			if val.IsNil() {
 				return 0
 			}
 			val = val.Elem()
+			return Int64(val.Interface())
 		}
-		return Int64(val.Interface())
+		return Int64(fmt.Sprintf("%#v", kv))
 	}
-	return 0
 }
 func Int32(v any) int32 {
 	if v == nil {
@@ -333,25 +343,41 @@ func Int(v any) int {
 	if v == nil {
 		return 0
 	}
-	switch v.(type) {
+	switch kv := v.(type) {
 	case bool:
-		if v.(bool) {
+		if kv {
 			return 1
 		}
 		return 0
 	case int:
-		return v.(int)
+		return kv
+	case int32:
+		return int(kv)
+	case int64:
+		return int(kv)
+	case uint:
+		return int(kv)
+	case uint32:
+		return int(kv)
+	case uint64:
+		return int(kv)
+	case float32:
+		return int(kv)
+	case float64:
+		return int(kv)
 	case string:
-		return First(strconv.Atoi(v.(string)))
+		return First(strconv.Atoi(kv))
 	case any:
-		val := reflect.ValueOf(v)
+		val := reflect.ValueOf(kv)
 		if val.Kind() == reflect.Ptr {
 			if val.IsNil() {
 				return 0
 			}
 			val = val.Elem()
+			return Int(val.Interface())
+		} else {
+			return 0
 		}
-		return Int(val.Interface())
 	}
 	return 0
 }
@@ -428,8 +454,9 @@ func String(v any) string {
 				return ""
 			}
 			val = val.Elem()
+			return String(val.Interface())
 		}
-		return String(val.Interface())
+		return fmt.Sprintf("%#v", v)
 	default:
 		return fmt.Sprintf("%v", v)
 	}
