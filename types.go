@@ -1,3 +1,4 @@
+// Package conv Пакет для конвертации типов
 package conv
 
 import (
@@ -132,6 +133,16 @@ func Time(el any) time.Time {
 				return p
 			}
 			p, err = time.Parse("2006-01-02T15:04:05", v)
+			if err == nil {
+				return p
+			}
+			return t
+		case 23:
+			p, err := time.Parse("2006-01-02 15:04:05.000", v)
+			if err == nil {
+				return p
+			}
+			p, err = time.Parse("2006-01-02T15:04:05.000", v)
 			if err == nil {
 				return p
 			}
