@@ -424,6 +424,8 @@ func String(v any) string {
 	switch vv := v.(type) {
 	case string:
 		return vv
+	case []byte:
+		return string(vv)
 	case bool:
 		if vv {
 			return "true"
