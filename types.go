@@ -148,7 +148,15 @@ func Time(el any) time.Time {
 			}
 			return t
 		case 28:
-			p, err := time.Parse("2006-01-02T15:04:05.000-0700", v)
+			p, err := time.Parse("2006-01-02T15:04:05:000-0700", v)
+			if err == nil {
+				return p
+			}
+			p, err = time.Parse("2006-01-02 15:04:05:000-0700", v)
+			if err == nil {
+				return p
+			}
+			p, err = time.Parse("2006-01-02T15:04:05.000-0700", v)
 			if err == nil {
 				return p
 			}
